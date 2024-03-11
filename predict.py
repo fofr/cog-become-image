@@ -27,15 +27,15 @@ class Predictor(BasePredictor):
                 shutil.rmtree(directory)
             os.makedirs(directory)
 
-    def handle_input_file(self, input_file: Path):
+    def handle_input_file(self, input_file: Path, filename: str):
         file_extension = os.path.splitext(input_file)[1].lower()
         if file_extension in [".jpg", ".jpeg", ".png", ".webp"]:
-            filename = f"input{file_extension}"
-            shutil.copy(input_file, os.path.join(INPUT_DIR, filename))
+            final_filename = filename + file_extension
+            shutil.copy(input_file, os.path.join(INPUT_DIR, final_filename))
         else:
             raise ValueError(f"Unsupported file type: {file_extension}")
 
-        return filename
+        return final_filename
 
     def log_and_collect_files(self, directory, prefix=""):
         files = []
@@ -140,8 +140,10 @@ class Predictor(BasePredictor):
                 missing_images.append("image_to_become")
             raise ValueError(f"No {' and '.join(missing_images)} provided")
 
-        filename = self.handle_input_file(image)
-        image_to_become_filename = self.handle_input_file(image_to_become)
+        filename = self.handle_input_file(image, "image_of_face")
+        image_to_become_filename = self.handle_input_file(
+            image_to_become, "image_to_become"
+        )
 
         if seed is None:
             seed = random.randint(0, 2**32 - 1)
