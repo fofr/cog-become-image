@@ -10,20 +10,8 @@ OUTPUT_DIR = "/tmp/outputs"
 INPUT_DIR = "/tmp/inputs"
 COMFYUI_TEMP_OUTPUT_DIR = "ComfyUI/temp"
 
-with open("face-to-many-api.json", "r") as file:
+with open("become-image-api.json", "r") as file:
     workflow_json = file.read()
-
-
-LORA_WEIGHTS_MAPPING = {
-    "3D": "artificialguybr/3DRedmond-3DRenderStyle-3DRenderAF.safetensors",
-    "Emoji": "fofr/emoji.safetensors",
-    "Video game": "artificialguybr/PS1Redmond-PS1Game-Playstation1Graphics.safetensors",
-    "Pixels": "artificialguybr/PixelArtRedmond-Lite64.safetensors",
-    "Clay": "artificialguybr/ClayAnimationRedm.safetensors",
-    "Toy": "artificialguybr/ToyRedmond-FnkRedmAF.safetensors",
-}
-
-LORA_TYPES = list(LORA_WEIGHTS_MAPPING.keys())
 
 
 class Predictor(BasePredictor):
@@ -31,22 +19,6 @@ class Predictor(BasePredictor):
         self.comfyUI = ComfyUI("127.0.0.1:8188")
         self.comfyUI.start_server(OUTPUT_DIR, INPUT_DIR)
         self.comfyUI.load_workflow(workflow_json, check_inputs=False)
-        self.download_loras()
-
-    def parse_custom_lora_url(self, url: str):
-        if "pbxt.replicate" in url:
-            parts_after_pbxt = url.split("/pbxt.replicate.delivery/")[1]
-        else:
-            parts_after_pbxt = url.split("/pbxt/")[1]
-        return parts_after_pbxt.split("/trained_model.tar")[0]
-
-    def add_to_lora_map(self, lora_url: str):
-        uuid = self.parse_custom_lora_url(lora_url)
-        self.comfyUI.weights_downloader.download_lora_from_replicate_url(uuid, lora_url)
-
-    def download_loras(self):
-        for weight in LORA_WEIGHTS_MAPPING.values():
-            self.comfyUI.weights_downloader.download_weights(weight)
 
     def cleanup(self):
         self.comfyUI.clear_queue()
@@ -80,68 +52,33 @@ class Predictor(BasePredictor):
         return files
 
     def update_workflow(self, workflow, **kwargs):
-        style = kwargs["style"]
         prompt = kwargs["prompt"]
         negative_prompt = kwargs["negative_prompt"]
-        custom_style = kwargs["lora_url"]
 
-        if custom_style:
-            uuid = self.parse_custom_lora_url(custom_style)
-            lora_name = f"{uuid}/{uuid}.safetensors"
-        else:
-            lora_name = LORA_WEIGHTS_MAPPING[style]
-            prompt = self.style_to_prompt(style, prompt)
-            negative_prompt = self.style_to_negative_prompt(style, negative_prompt)
+        load_image_person = workflow["22"]["inputs"]
+        load_image_person["image"] = kwargs["filename"]
 
-        load_image = workflow["22"]["inputs"]
-        load_image["image"] = kwargs["filename"]
+        load_image_to_become = workflow["83"]["inputs"]
+        load_image_to_become["image"] = kwargs["image_to_become_filename"]
 
         loader = workflow["2"]["inputs"]
         loader["positive"] = prompt
-        loader["negative"] = negative_prompt
+        loader["negative"] = f"nsfw, nude, {negative_prompt}, ugly, broken, watermark"
 
-        controlnet = workflow["28"]["inputs"]
+        controlnet = workflow["79"]["inputs"]
         controlnet["strength"] = kwargs["control_depth_strength"]
-
-        lora_loader = workflow["3"]["inputs"]
-        lora_loader["lora_name_1"] = lora_name
-        lora_loader["lora_wt_1"] = kwargs["lora_scale"]
 
         instant_id = workflow["41"]["inputs"]
         instant_id["weight"] = kwargs["instant_id_strength"]
 
-        sampler = workflow["4"]["inputs"]
+        ip_adapter = workflow["81"]["inputs"]
+        ip_adapter["weight"] = kwargs["image_to_become_strength"]
+        ip_adapter["noise"] = kwargs["image_to_become_noise"]
+
+        sampler = workflow["75"]["inputs"]
         sampler["denoise"] = kwargs["denoising_strength"]
         sampler["seed"] = kwargs["seed"]
         sampler["cfg"] = kwargs["prompt_strength"]
-
-    def style_to_prompt(self, style, prompt):
-        style_prompts = {
-            "3D": f"3D Render Style, 3DRenderAF, {prompt}",
-            "Emoji": f"memoji, emoji, {prompt}, 3d render, sharp",
-            "Video game": f"Playstation 1 Graphics, PS1 Game, {prompt}, Video game screenshot",
-            "Pixels": f"Pixel Art, PixArFK, {prompt}",
-            "Clay": f"Clay Animation, Clay, {prompt}",
-            "Toy": f"FnkRedmAF, {prompt}, toy, miniature",
-        }
-        return style_prompts[style]
-
-    def style_to_negative_prompt(self, style, negative_prompt=""):
-        if negative_prompt:
-            negative_prompt = f"{negative_prompt}, "
-
-        start_base_negative = "nsfw, nude, oversaturated, "
-        end_base_negative = "ugly, broken, watermark"
-        specifics = {
-            "3D": "photo, photography, ",
-            "Emoji": "photo, photography, blurry, soft, ",
-            "Video game": "text, photo, ",
-            "Pixels": "photo, photography, ",
-            "Clay": "",
-            "Toy": "",
-        }
-
-        return f"{specifics[style]}{start_base_negative}{negative_prompt}{end_base_negative}"
 
     def predict(
         self,
@@ -149,10 +86,9 @@ class Predictor(BasePredictor):
             description="An image of a person to be converted",
             default=None,
         ),
-        style: str = Input(
-            default="3D",
-            choices=LORA_TYPES,
-            description="Style to convert to",
+        image_to_become: Path = Input(
+            description="Any image to convert the person to",
+            default=None,
         ),
         prompt: str = Input(default="a person"),
         negative_prompt: str = Input(
@@ -160,13 +96,13 @@ class Predictor(BasePredictor):
             description="Things you do not want in the image",
         ),
         denoising_strength: float = Input(
-            default=0.65,
+            default=1,
             ge=0,
             le=1,
-            description="How much of the original image to keep. 1 is the complete destruction of the original image, 0 is the original image",
+            description="How much of the original image of the person to keep. 1 is the complete destruction of the original image, 0 is the original image",
         ),
         prompt_strength: float = Input(
-            default=4.5,
+            default=3.0,
             ge=0,
             le=20,
             description="Strength of the prompt. This is the CFG scale, higher numbers lead to stronger prompt, lower numbers will keep more of a likeness to the original.",
@@ -180,33 +116,32 @@ class Predictor(BasePredictor):
         instant_id_strength: float = Input(
             default=1, description="How strong the InstantID will be.", ge=0, le=1
         ),
+        image_to_become_strength: float = Input(
+            default=0.75, description="How strong the style will be applied", ge=0, le=1
+        ),
+        image_to_become_noise: float = Input(
+            default=0.3,
+            description="How much noise to add to the style image before processing. An alternative way of controlling stength.",
+            ge=0,
+            le=1,
+        ),
         seed: int = Input(
             default=None, description="Fix the random seed for reproducibility"
-        ),
-        custom_lora_url: str = Input(
-            default=None,
-            description="URL to a Replicate custom LoRA. Must be in the format https://replicate.delivery/pbxt/[id]/trained_model.tar or https://pbxt.replicate.delivery/[id]/trained_model.tar",
-        ),
-        lora_scale: float = Input(
-            default=1, description="How strong the LoRA will be", ge=0, le=1
         ),
     ) -> List[Path]:
         """Run a single prediction on the model"""
         self.cleanup()
 
-        if image is None:
-            raise ValueError("No image provided")
+        if image is None or image_to_become is None:
+            missing_images = []
+            if image is None:
+                missing_images.append("image")
+            if image_to_become is None:
+                missing_images.append("image_to_become")
+            raise ValueError(f"No {' and '.join(missing_images)} provided")
 
         filename = self.handle_input_file(image)
-        if custom_lora_url is not None:
-            if not (
-                "https://replicate.delivery/pbxt/" in custom_lora_url
-                or "https://pbxt.replicate.delivery/" in custom_lora_url
-            ) or not custom_lora_url.endswith("/trained_model.tar"):
-                raise ValueError(
-                    "Custom LoRA URL format is not supported. Must be in the format https://replicate.delivery/pbxt/[id]/trained_model.tar or https://pbxt.replicate.delivery/[id]/trained_model.tar"
-                )
-            self.add_to_lora_map(custom_lora_url)
+        image_to_become_filename = self.handle_input_file(image_to_become)
 
         if seed is None:
             seed = random.randint(0, 2**32 - 1)
@@ -216,16 +151,16 @@ class Predictor(BasePredictor):
         self.update_workflow(
             workflow,
             filename=filename,
-            style=style,
-            denoising_strength=denoising_strength,
-            seed=seed,
+            image_to_become_filename=image_to_become_filename,
             prompt=prompt,
             negative_prompt=negative_prompt,
             prompt_strength=prompt_strength,
-            instant_id_strength=instant_id_strength,
-            lora_url=custom_lora_url,
-            lora_scale=lora_scale,
             control_depth_strength=control_depth_strength,
+            instant_id_strength=instant_id_strength,
+            image_to_become_strength=image_to_become_strength,
+            image_to_become_noise=image_to_become_noise,
+            denoising_strength=denoising_strength,
+            seed=seed,
         )
 
         wf = self.comfyUI.load_workflow(workflow, check_weights=False)
