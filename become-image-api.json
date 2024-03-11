@@ -1,7 +1,7 @@
 {
   "2": {
     "inputs": {
-      "ckpt_name": "albedobaseXL_v13.safetensors",
+      "ckpt_name": "dreamshaperXL_lightningDPMSDE.safetensors",
       "vae_name": "Baked VAE",
       "clip_skip": -1,
       "lora_name": "None",
@@ -172,8 +172,8 @@
   "75": {
     "inputs": {
       "seed": 652860453823882,
-      "steps": 20,
-      "cfg": 3,
+      "steps": 4,
+      "cfg": 2,
       "sampler_name": "dpmpp_sde_gpu",
       "scheduler": "karras",
       "denoise": 1,

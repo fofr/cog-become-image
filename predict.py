@@ -62,8 +62,14 @@ class Predictor(BasePredictor):
         load_image_to_become["image"] = kwargs["image_to_become_filename"]
 
         loader = workflow["2"]["inputs"]
-        loader["positive"] = prompt
-        loader["negative"] = f"nsfw, nude, {negative_prompt}, ugly, broken, watermark"
+        loader["positive"] = f"{prompt}, sharp, high quality"
+
+        if negative_prompt:
+            loader["negative"] = (
+                f"nsfw, nude, {negative_prompt}, soft, blurry, ugly, broken, watermark"
+            )
+        else:
+            loader["negative"] = "nsfw, nude, soft, blurry, ugly, broken, watermark"
 
         controlnet = workflow["79"]["inputs"]
         controlnet["strength"] = kwargs["control_depth_strength"]
@@ -102,9 +108,9 @@ class Predictor(BasePredictor):
             description="How much of the original image of the person to keep. 1 is the complete destruction of the original image, 0 is the original image",
         ),
         prompt_strength: float = Input(
-            default=3.0,
+            default=2.0,
             ge=0,
-            le=20,
+            le=3,
             description="Strength of the prompt. This is the CFG scale, higher numbers lead to stronger prompt, lower numbers will keep more of a likeness to the original.",
         ),
         control_depth_strength: float = Input(

@@ -253,63 +253,6 @@
       ]
     },
     {
-      "id": 67,
-      "type": "ImageResize+",
-      "pos": [
-        580,
-        -282
-      ],
-      "size": {
-        "0": 315,
-        "1": 194
-      },
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 103
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            104,
-            105,
-            106
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "width",
-          "type": "INT",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ImageResize+"
-      },
-      "widgets_values": [
-        1024,
-        1024,
-        "nearest",
-        true,
-        "always"
-      ]
-    },
-    {
       "id": 5,
       "type": "SaveImage",
       "pos": [
@@ -388,66 +331,6 @@
       "color": "#223322",
       "bgcolor": "#335533",
       "shape": 1
-    },
-    {
-      "id": 75,
-      "type": "KSampler",
-      "pos": [
-        2265,
-        -182
-      ],
-      "size": {
-        "0": 315,
-        "1": 262
-      },
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 129
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 125
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 124
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 113
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            107
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "KSampler"
-      },
-      "widgets_values": [
-        652860453823882,
-        "randomize",
-        20,
-        3,
-        "dpmpp_sde_gpu",
-        "karras",
-        1
-      ]
     },
     {
       "id": 80,
@@ -677,6 +560,201 @@
       ]
     },
     {
+      "id": 22,
+      "type": "LoadImage",
+      "pos": [
+        99,
+        -289
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            103
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "download.webp",
+        "image"
+      ]
+    },
+    {
+      "id": 83,
+      "type": "LoadImage",
+      "pos": [
+        1610,
+        -756
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            130
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "319055-2.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 67,
+      "type": "ImageResize+",
+      "pos": [
+        580,
+        -282
+      ],
+      "size": {
+        "0": 315,
+        "1": 194
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 103
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            104,
+            105,
+            106
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageResize+"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        "nearest",
+        true,
+        "always"
+      ]
+    },
+    {
+      "id": 75,
+      "type": "KSampler",
+      "pos": [
+        2265,
+        -182
+      ],
+      "size": {
+        "0": 315,
+        "1": 262
+      },
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 129
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 125
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 124
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 113
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            107
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        1072928669450679,
+        "randomize",
+        4,
+        2,
+        "dpmpp_sde_gpu",
+        "karras",
+        1
+      ]
+    },
+    {
       "id": 2,
       "type": "Efficient Loader",
       "pos": [
@@ -764,13 +842,13 @@
         "Node name for S&R": "Efficient Loader"
       },
       "widgets_values": [
-        "albedobaseXL_v13.safetensors",
+        "dreamshaperXL_lightningDPMSDE.safetensors",
         "Baked VAE",
         -1,
         "None",
         1,
         1,
-        "a painting of a woman",
+        "a person",
         "nsfw, nude, ugly, broken, watermark",
         "none",
         "comfy",
@@ -781,84 +859,6 @@
       "color": "#222233",
       "bgcolor": "#333355",
       "shape": 1
-    },
-    {
-      "id": 22,
-      "type": "LoadImage",
-      "pos": [
-        99,
-        -289
-      ],
-      "size": {
-        "0": 315,
-        "1": 314
-      },
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            103
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoadImage"
-      },
-      "widgets_values": [
-        "download.webp",
-        "image"
-      ]
-    },
-    {
-      "id": 83,
-      "type": "LoadImage",
-      "pos": [
-        1610,
-        -756
-      ],
-      "size": {
-        "0": 315,
-        "1": 314
-      },
-      "flags": {},
-      "order": 7,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            130
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoadImage"
-      },
-      "widgets_values": [
-        "fc,550x550,white-1110626934.jpg",
-        "image"
-      ]
     }
   ],
   "links": [
