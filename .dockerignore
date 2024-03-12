@@ -22,6 +22,7 @@
 # .pt files are used by efficiency-nodes-comfyui
 
 # Files
+safety-cache/
 scripts/*
 updated_weights.json
 

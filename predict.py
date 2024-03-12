@@ -2,6 +2,7 @@ import os
 import shutil
 import random
 import json
+from safety_checker import SafetyChecker
 from typing import List
 from cog import BasePredictor, Input, Path
 from helpers.comfyui import ComfyUI
@@ -16,6 +17,7 @@ with open("become-image-api.json", "r") as file:
 
 class Predictor(BasePredictor):
     def setup(self):
+        self.safetyChecker = SafetyChecker()
         self.comfyUI = ComfyUI("127.0.0.1:8188")
         self.comfyUI.start_server(OUTPUT_DIR, INPUT_DIR)
         self.comfyUI.load_workflow(workflow_json, check_inputs=False)
@@ -134,6 +136,9 @@ class Predictor(BasePredictor):
         seed: int = Input(
             default=None, description="Fix the random seed for reproducibility"
         ),
+        disable_safety_checker: bool = Input(
+            description="Disable safety checker for generated images", default=False
+        ),
     ) -> List[Path]:
         """Run a single prediction on the model"""
         self.cleanup()
@@ -150,6 +155,12 @@ class Predictor(BasePredictor):
         image_to_become_filename = self.handle_input_file(
             image_to_become, "image_to_become"
         )
+
+        input_files = [image, image_to_become]
+        if not disable_safety_checker:
+            has_nsfw_content_input = self.safetyChecker.run(input_files)
+            if any(has_nsfw_content_input):
+                raise ValueError("NSFW content detected in input images")
 
         if seed is None:
             seed = random.randint(0, 2**32 - 1)
@@ -181,5 +192,11 @@ class Predictor(BasePredictor):
         for directory in output_directories:
             print(f"Contents of {directory}:")
             files.extend(self.log_and_collect_files(directory))
+
+        if not disable_safety_checker:
+            has_nsfw_content = self.safetyChecker.run(files)
+            if any(has_nsfw_content):
+                print("Removing NSFW images")
+                files = [f for i, f in enumerate(files) if not has_nsfw_content[i]]
 
         return files
