@@ -88,6 +88,9 @@ class Predictor(BasePredictor):
         sampler["seed"] = kwargs["seed"]
         sampler["cfg"] = kwargs["prompt_strength"]
 
+        batcher = workflow["85"]["inputs"]
+        batcher["multiply_by"] = kwargs["number_of_images"]
+
     def predict(
         self,
         image: Path = Input(
@@ -102,6 +105,12 @@ class Predictor(BasePredictor):
         negative_prompt: str = Input(
             default="",
             description="Things you do not want in the image",
+        ),
+        number_of_images: int = Input(
+            default=2,
+            ge=1,
+            le=10,
+            description="Number of images to generate",
         ),
         denoising_strength: float = Input(
             default=1,
@@ -173,6 +182,7 @@ class Predictor(BasePredictor):
             image_to_become_filename=image_to_become_filename,
             prompt=prompt,
             negative_prompt=negative_prompt,
+            number_of_images=number_of_images,
             prompt_strength=prompt_strength,
             control_depth_strength=control_depth_strength,
             instant_id_strength=instant_id_strength,

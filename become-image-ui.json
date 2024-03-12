@@ -1,48 +1,7 @@
 {
-  "last_node_id": 83,
-  "last_link_id": 130,
+  "last_node_id": 85,
+  "last_link_id": 132,
   "nodes": [
-    {
-      "id": 51,
-      "type": "VAEEncode",
-      "pos": [
-        1845,
-        526
-      ],
-      "size": {
-        "0": 210,
-        "1": 46
-      },
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 104
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 90
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            113
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VAEEncode"
-      }
-    },
     {
       "id": 35,
       "type": "InstantIDModelLoader",
@@ -119,7 +78,7 @@
         "1": 46
       },
       "flags": {},
-      "order": 16,
+      "order": 17,
       "mode": 0,
       "inputs": [
         {
@@ -264,7 +223,7 @@
         "1": 760.05859375
       },
       "flags": {},
-      "order": 17,
+      "order": 18,
       "mode": 0,
       "inputs": [
         {
@@ -290,7 +249,7 @@
         "1": 146
       },
       "flags": {},
-      "order": 10,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
@@ -408,7 +367,7 @@
         "1": 258
       },
       "flags": {},
-      "order": 14,
+      "order": 15,
       "mode": 0,
       "inputs": [
         {
@@ -472,7 +431,7 @@
         "1": 266
       },
       "flags": {},
-      "order": 12,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -663,9 +622,9 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            104,
             105,
-            106
+            106,
+            131
           ],
           "shape": 3,
           "slot_index": 0
@@ -706,7 +665,7 @@
         "1": 262
       },
       "flags": {},
-      "order": 15,
+      "order": 16,
       "mode": 0,
       "inputs": [
         {
@@ -745,7 +704,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        1072928669450679,
+        706354815443576,
         "randomize",
         4,
         2,
@@ -766,7 +725,7 @@
         "1": 462
       },
       "flags": {},
-      "order": 11,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -859,6 +818,92 @@
       "color": "#222233",
       "bgcolor": "#333355",
       "shape": 1
+    },
+    {
+      "id": 51,
+      "type": "VAEEncode",
+      "pos": [
+        1845,
+        526
+      ],
+      "size": {
+        "0": 210,
+        "1": 46
+      },
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 132
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 90
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            113
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEEncode"
+      }
+    },
+    {
+      "id": 85,
+      "type": "VHS_DuplicateImages",
+      "pos": [
+        1809,
+        360
+      ],
+      "size": {
+        "0": 315,
+        "1": 78
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 131
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            132
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "count",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VHS_DuplicateImages"
+      },
+      "widgets_values": {
+        "multiply_by": 10
+      }
     }
   ],
   "links": [
@@ -923,14 +968,6 @@
       22,
       0,
       67,
-      0,
-      "IMAGE"
-    ],
-    [
-      104,
-      67,
-      0,
-      51,
       0,
       "IMAGE"
     ],
@@ -1060,6 +1097,22 @@
       0,
       81,
       2,
+      "IMAGE"
+    ],
+    [
+      131,
+      67,
+      0,
+      85,
+      0,
+      "IMAGE"
+    ],
+    [
+      132,
+      85,
+      0,
+      51,
+      0,
       "IMAGE"
     ]
   ],

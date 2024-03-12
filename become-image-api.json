@@ -7,7 +7,7 @@
       "lora_name": "None",
       "lora_model_strength": 1,
       "lora_clip_strength": 1,
-      "positive": "a painting of a woman",
+      "positive": "a person",
       "negative": "nsfw, nude, ugly, broken, watermark",
       "token_normalization": "none",
       "weight_interpretation": "comfy",
@@ -139,7 +139,7 @@
   "51": {
     "inputs": {
       "pixels": [
-        "67",
+        "85",
         0
       ],
       "vae": [
@@ -171,7 +171,7 @@
   },
   "75": {
     "inputs": {
-      "seed": 652860453823882,
+      "seed": 706354815443576,
       "steps": 4,
       "cfg": 2,
       "sampler_name": "dpmpp_sde_gpu",
@@ -284,12 +284,25 @@
   },
   "83": {
     "inputs": {
-      "image": "fc,550x550,white-1110626934.jpg",
+      "image": "319055-2.jpg",
       "upload": "image"
     },
     "class_type": "LoadImage",
     "_meta": {
       "title": "Load Image"
+    }
+  },
+  "85": {
+    "inputs": {
+      "multiply_by": 10,
+      "images": [
+        "67",
+        0
+      ]
+    },
+    "class_type": "VHS_DuplicateImages",
+    "_meta": {
+      "title": "Duplicate Image Batch 🎥🅥🅗🅢"
     }
   }
 }

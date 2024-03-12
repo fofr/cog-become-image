@@ -12,6 +12,7 @@ repos=(
   "https://github.com/jags111/efficiency-nodes-comfyui 1ac5f18"
   "https://github.com/cubiq/ComfyUI_InstantID 0fcf494"
   "https://github.com/cubiq/ComfyUI_essentials c9236fe"
+  "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite 1dbf01b"
 )
 
 # Destination directory
