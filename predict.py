@@ -33,7 +33,7 @@ class Predictor(BasePredictor):
     def handle_input_file(self, input_file: Path, filename: str):
         file_extension = os.path.splitext(input_file)[1].lower()
         if file_extension in [".jpg", ".jpeg"]:
-            filename = "input.png"
+            final_filename = f"{filename}.png"
             image = Image.open(input_file)
 
             try:
@@ -53,7 +53,7 @@ class Predictor(BasePredictor):
                 # Do not rotate
                 pass
 
-            image.save(os.path.join(INPUT_DIR, filename))
+            image.save(os.path.join(INPUT_DIR, final_filename))
         elif file_extension in [".png", ".webp"]:
             final_filename = filename + file_extension
             shutil.copy(input_file, os.path.join(INPUT_DIR, final_filename))
