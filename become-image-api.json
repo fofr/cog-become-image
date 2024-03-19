@@ -67,7 +67,7 @@
   },
   "36": {
     "inputs": {
-      "provider": "CPU"
+      "provider": "CUDA"
     },
     "class_type": "InstantIDFaceAnalysis",
     "_meta": {
@@ -124,8 +124,8 @@
   },
   "49": {
     "inputs": {
-      "preprocessor": "Zoe-DepthMapPreprocessor",
-      "resolution": 1024,
+      "preprocessor": "MiDaS-DepthMapPreprocessor",
+      "resolution": 512,
       "image": [
         "67",
         0
